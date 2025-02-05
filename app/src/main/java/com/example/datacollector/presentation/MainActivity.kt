@@ -34,6 +34,7 @@ import android.graphics.Color
 import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
+import com.example.datacollector.R
 
 class MainActivity : ComponentActivity() {
 
@@ -68,111 +69,30 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault)
+        Log.i("MainActivityUserDebug", "MainActivity onCreate")
+
+        setContentView(R.layout.main_activity)
 
 
-        Log.i("MainActivityUserDebug","MainActivity onCreate")
+        val bleScanButton = findViewById<Button>(R.id.bleScanButton)
+        val heartrateButton = findViewById<Button>(R.id.heartrateButton)
 
-        val rootLayout = LinearLayout(this)
-        rootLayout.orientation = LinearLayout.VERTICAL
-        rootLayout.gravity = Gravity.CENTER
-
-        val bleScanButton = Button(this)
-        bleScanButton.text = "scan BLE devices"
-        bleScanButton.setTextColor(Color.BLUE)
-
-
-        val heartrateButton = Button(this)
-        heartrateButton.text = "measure HeartRate"
-        heartrateButton.setTextColor(Color.RED)
-
-        rootLayout.addView(bleScanButton)
-        rootLayout.addView(heartrateButton)
-
-        setContentView(rootLayout)
 
         bleScanButton.setOnClickListener {
-            Log.i("MainActivityUserDebug","BLE Button Clicked")
-            bleScanButton.text = "CLICKED!!!"
+            Log.i("MainActivityUserDebug", "BLE Button Clicked")
             val intent = Intent(this, BLEScanActivity::class.java)
             startActivity(intent)
         }
 
         heartrateButton.setOnClickListener {
-            Log.i("MainActivityUserDebug","HeartRate Button Clicked")
-            heartrateButton.text = "CLICKED!!!"
+            Log.i("MainActivityUserDebug", "HeartRate Button Clicked")
             val intent = Intent(this, HeartRateActivity::class.java)
             startActivity(intent)
         }
 
 
-
-
-
-//        check Permission
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BODY_SENSORS)
-//            != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // Request Permission
-//            ActivityCompat.requestPermissions(
-//                this,
-//                arrayOf(Manifest.permission.BODY_SENSORS),
-//                1001
-//            )
-//        }
-//
-//
-//        val healthClient = HealthServices.getClient(this /*context*/)
-//        measureClient = healthClient.measureClient
-//
-//
-//        var supportsHeartRate = false;
-//
-//        Log.d("TEST", "TEST...........")
-//
-//        lifecycleScope.launch {
-//            val capabilities = measureClient.getCapabilitiesAsync().await()
-//            supportsHeartRate = DataType.HEART_RATE_BPM in capabilities.supportedDataTypesMeasure
-//
-//            measureClient.registerMeasureCallback(
-//                DataType.Companion.HEART_RATE_BPM,
-//                heartRateCallback
-//            )
-//
-//            setContent {
-//                WearApp(supportsHeartRate, heartRateFlow)
-//            }
-        }
     }
+}
 
 
-    @Composable
-    fun WearApp(supportsHeartRate: Boolean, heartRateFlow: StateFlow<Double?>) {
 
-        val heartRate by heartRateFlow.collectAsState()
-
-        DataCollectorTheme {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colors.background),
-                contentAlignment = Alignment.Center
-            ) {
-                if (supportsHeartRate) {
-                    if (heartRate != null) {
-                        Text(text = "Heart Rate: ${heartRate!!.toInt()} BPM")
-                    } else {
-                        Text(text = "Measuring Heart Rate...")
-                    }
-                } else {
-                    Text(text = "Heart Rate NOT Supported!")
-                }
-            }
-        }
-    }
-
-
-//@Preview(device = WearDevices.SMALL_ROUND, showSystemUi = true)
-//@Composable
-//fun DefaultPreview() {
-//    WearApp(false)
-//}
