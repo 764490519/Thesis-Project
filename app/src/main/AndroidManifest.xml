@@ -44,7 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.BLEScanActivity" />
+        <activity android:name=".presentation.Bluetooth.BLEScanActivity" />
         <activity android:name=".presentation.HeartRateActivity" />
     </application>
 

@@ -63,4 +63,8 @@ dependencies {
     // Kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.0")
 
+    //wearable
+    implementation("androidx.wear:wear:1.3.0")
+    implementation("androidx.wear:wear-input:1.1.0")
+
 }

@@ -1,7 +1,6 @@
-package com.example.datacollector.presentation
+package com.example.datacollector.presentation.Bluetooth
 
 import android.Manifest
-import android.app.ComponentCaller
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
@@ -13,18 +12,23 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.datacollector.R
+import com.example.datacollector.presentation.MoveSense.MoveSenseCharacteristics
+import com.example.datacollector.presentation.MoveSense.MoveSenseManager
+import com.example.datacollector.presentation.MoveSense.MoveSenseServices
+import com.example.datacollector.presentation.callback.BLEScanCallback
 
 class BLEScanActivity : ComponentActivity() {
 
     private val REQUEST_CODE_BLE = 1001
-    private val REQUEST_ENABLE_BT = 1
 
     private val blePermissions = arrayOf(
         Manifest.permission.BLUETOOTH_SCAN,
@@ -34,10 +38,14 @@ class BLEScanActivity : ComponentActivity() {
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private lateinit var bluetoothLeScanner: BluetoothLeScanner
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var deviceAdapter: DeviceAdapter
     private var isScanning = false
     private var scannedDevices = mutableListOf<ScanResult>()
     private var scannedDeviceAddresses = HashSet<String>()
 
+    private lateinit var scanCallback: ScanCallback
+    private var moveSenseManager = MoveSenseManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,41 +79,77 @@ class BLEScanActivity : ComponentActivity() {
             enableBluetoothLauncher.launch(enableBtIntent)
         }
 
-        Log.i("BLEScanActivityUserDebug", "test...")
+
+        setContentView(R.layout.ble_scan_activity)
+        val myButton = findViewById<Button>(R.id.bleToggleButton)
+        recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        deviceAdapter = DeviceAdapter(this, scannedDevices) { device ->
+            moveSenseManager.connect(device)
+        }
+        recyclerView.adapter = deviceAdapter
 
 
-        //layout
-        val rootLayout = LinearLayout(this)
-        rootLayout.orientation = LinearLayout.VERTICAL
-        rootLayout.gravity = Gravity.CENTER
+        var currentIndex = 0
+        val testButton = findViewById<Button>(R.id.testButton)
+        testButton.setOnClickListener {
+            Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show()
+            val characteristicsQueue = listOf(
+                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.DEVICE_NAME,
+                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.APPEARANCE,
+                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.CONNECTION_PARAMETERS,
+                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.CENTRAL_ADDRESS_RESOLUTION,
 
-        val myButton = Button(this)
-        myButton.text = "start scan"
-        myButton.setTextColor(Color.BLUE)
+                MoveSenseServices.GENERIC_ATTRIBUTE to MoveSenseCharacteristics.SERVICE_CHANGED,
+
+                MoveSenseServices.DEVICE_INFORMATION to MoveSenseCharacteristics.MANUFACTURER_NAME,
+                MoveSenseServices.DEVICE_INFORMATION to MoveSenseCharacteristics.SERIAL_NUMBER,
+
+                MoveSenseServices.BATTERY_SERVICE to MoveSenseCharacteristics.BATTERY_LEVEL,
+
+                MoveSenseServices.MOVESENSE_SERVICE to MoveSenseCharacteristics.MOVESENSE_DATA_1,
+                MoveSenseServices.MOVESENSE_SERVICE to MoveSenseCharacteristics.MOVESENSE_DATA_2
+            )
+
+            val (serviceUUID, characteristicUUID) = characteristicsQueue[currentIndex]
+            moveSenseManager. readCharacteristic(serviceUUID, characteristicUUID)
 
 
-        rootLayout.addView(myButton)
-        setContentView(rootLayout)
+            currentIndex = (currentIndex + 1) % characteristicsQueue.size
+
+        }
+
+
 
         myButton.setOnClickListener {
-            if (isScanning){
-                //stop scan BLE devices
+            if (isScanning) {
+                //Stop Scanning
                 Log.i("BLEScanActivityUserDebug", "stop scan bluetooth devices...")
                 bluetoothLeScanner.stopScan(scanCallback)
                 isScanning = false
                 myButton.text = "start scan"
                 myButton.setTextColor(Color.BLUE)
 
-                Log.d("BLEScanActivityUserDebug", "Stopped scanning. Found ${scannedDevices.size} devices.")
+                Log.d(
+                    "BLEScanActivityUserDebug",
+                    "Stopped scanning. Found ${scannedDevices.size} devices."
+                )
 
                 for (device in scannedDevices) {
-                    Log.d("BLEScanActivityUserDebug", "Device: ${device.device.name ?: "Unknown"} - ${device.device.address}")
+                    Log.d(
+                        "BLEScanActivityUserDebug",
+                        "Device: ${device.device.name ?: "Unknown"} - ${device.device.address}"
+                    )
                 }
 
-            }else{
+
+            }
+            else {
+                //Start Scanning
                 Log.i("BLEScanActivityUserDebug", "start scan bluetooth devices...")
                 scannedDevices = mutableListOf<ScanResult>()
                 scannedDeviceAddresses = HashSet<String>()
+                scanCallback = BLEScanCallback(scannedDevices, scannedDeviceAddresses, deviceAdapter,this)
                 bluetoothLeScanner.startScan(scanCallback)
                 isScanning = true
                 myButton.text = "stop scan"
@@ -114,12 +158,10 @@ class BLEScanActivity : ComponentActivity() {
 
         }
 
-        Log.i("BLEScanActivityUserDebug", "test3...")
-
-
-
 
     }
+
+
 
 
     private val enableBluetoothLauncher = registerForActivityResult(
@@ -133,45 +175,6 @@ class BLEScanActivity : ComponentActivity() {
 
         }
     }
-
-
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?,
-        caller: ComponentCaller
-    ) {
-        super.onActivityResult(requestCode, resultCode, data, caller)
-    }
-
-    val scanCallback = object : ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult?) {
-            super.onScanResult(callbackType, result)
-            Log.i("BLEScanActivityUserDebug", "onScanResult")
-            if (result != null && result.device != null && scannedDeviceAddresses.add(result.device.address)) {
-                scannedDevices.add(result)
-            }
-        }
-
-        override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-            super.onBatchScanResults(results)
-            Log.i("BLEScanActivityUserDebug", "onBatchScanResults")
-            if (results == null)
-                return
-            for (result in results){
-                if (result.device == null || !scannedDeviceAddresses.add(result.device.address))
-                    continue
-                scannedDevices.add(result)
-            }
-
-        }
-
-        override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-        }
-
-    }
-
 
 
     override fun onPause() {
