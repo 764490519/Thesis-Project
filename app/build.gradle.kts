@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+
+
 android {
     namespace = "com.example.datacollector"
     compileSdk = 35
@@ -50,6 +52,8 @@ dependencies {
     implementation(libs.wear.tooling.preview)
     implementation(libs.activity.compose)
     implementation(libs.core.splashscreen)
+    implementation(libs.play.services.location)
+    implementation(libs.material)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
@@ -66,5 +70,19 @@ dependencies {
     //wearable
     implementation("androidx.wear:wear:1.3.0")
     implementation("androidx.wear:wear-input:1.1.0")
+
+    //Movesense lib
+    implementation(files("libs/mdslib-3.27.0-release.aar"))
+
+    // RxAndroidBle
+    implementation ("com.polidea.rxandroidble2:rxandroidble:1.10.2")
+    implementation ("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation ("io.reactivex.rxjava2:rxjava:2.2.8")
+
+    implementation ("com.google.code.gson:gson:2.8.6")
+
+    implementation ("com.patloew.colocation:colocation:1.1.0")
+
+
 
 }

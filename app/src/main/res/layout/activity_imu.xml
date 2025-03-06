@@ -1,0 +1,94 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="50dp"
+        android:paddingBottom="30dp">
+
+        <TextView
+            android:id="@+id/imu_timestamp_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Time Stamp: "
+            android:paddingBottom="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Linear Acceleration" />
+
+        <TextView
+            android:id="@+id/linearacc_x_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x:" />
+
+        <TextView
+            android:id="@+id/linearacc_y_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="y:" />
+
+        <TextView
+            android:id="@+id/linearacc_z_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="z:" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Gyro" />
+
+        <TextView
+            android:id="@+id/gyro_x_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x:" />
+
+        <TextView
+            android:id="@+id/gyro_y_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="y:" />
+
+        <TextView
+            android:id="@+id/gyro_z_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="z:" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Magn" />
+
+        <TextView
+            android:id="@+id/magn_x_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x:" />
+
+        <TextView
+            android:id="@+id/magn_y_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="y:" />
+
+        <TextView
+            android:id="@+id/magn_z_axis_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="z:" />
+
+    </LinearLayout>
+</ScrollView>

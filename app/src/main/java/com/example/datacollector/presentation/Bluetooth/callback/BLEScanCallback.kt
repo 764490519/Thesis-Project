@@ -1,4 +1,4 @@
-package com.example.datacollector.presentation.callback
+package com.example.datacollector.presentation.Bluetooth.callback
 
 import android.Manifest
 import android.bluetooth.le.ScanCallback

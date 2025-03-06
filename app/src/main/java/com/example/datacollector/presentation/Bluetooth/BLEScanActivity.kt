@@ -21,10 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datacollector.R
-import com.example.datacollector.presentation.MoveSense.MoveSenseCharacteristics
-import com.example.datacollector.presentation.MoveSense.MoveSenseManager
-import com.example.datacollector.presentation.MoveSense.MoveSenseServices
-import com.example.datacollector.presentation.callback.BLEScanCallback
+import com.example.datacollector.presentation.Bluetooth.callback.BLEScanCallback
 
 class BLEScanActivity : ComponentActivity() {
 
@@ -45,7 +42,7 @@ class BLEScanActivity : ComponentActivity() {
     private var scannedDeviceAddresses = HashSet<String>()
 
     private lateinit var scanCallback: ScanCallback
-    private var moveSenseManager = MoveSenseManager(this)
+    private var deviceManager = DeviceManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,12 +77,12 @@ class BLEScanActivity : ComponentActivity() {
         }
 
 
-        setContentView(R.layout.ble_scan_activity)
+        setContentView(R.layout.activity_ble_scan)
         val myButton = findViewById<Button>(R.id.bleToggleButton)
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         deviceAdapter = DeviceAdapter(this, scannedDevices) { device ->
-            moveSenseManager.connect(device)
+            deviceManager.connect(device)
         }
         recyclerView.adapter = deviceAdapter
 
@@ -95,24 +92,24 @@ class BLEScanActivity : ComponentActivity() {
         testButton.setOnClickListener {
             Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show()
             val characteristicsQueue = listOf(
-                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.DEVICE_NAME,
-                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.APPEARANCE,
-                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.CONNECTION_PARAMETERS,
-                MoveSenseServices.GENERIC_ACCESS to MoveSenseCharacteristics.CENTRAL_ADDRESS_RESOLUTION,
+                DeviceServices.GENERIC_ACCESS to DeviceCharacteristics.DEVICE_NAME,
+                DeviceServices.GENERIC_ACCESS to DeviceCharacteristics.APPEARANCE,
+                DeviceServices.GENERIC_ACCESS to DeviceCharacteristics.CONNECTION_PARAMETERS,
+                DeviceServices.GENERIC_ACCESS to DeviceCharacteristics.CENTRAL_ADDRESS_RESOLUTION,
 
-                MoveSenseServices.GENERIC_ATTRIBUTE to MoveSenseCharacteristics.SERVICE_CHANGED,
+                DeviceServices.GENERIC_ATTRIBUTE to DeviceCharacteristics.SERVICE_CHANGED,
 
-                MoveSenseServices.DEVICE_INFORMATION to MoveSenseCharacteristics.MANUFACTURER_NAME,
-                MoveSenseServices.DEVICE_INFORMATION to MoveSenseCharacteristics.SERIAL_NUMBER,
+                DeviceServices.DEVICE_INFORMATION to DeviceCharacteristics.MANUFACTURER_NAME,
+                DeviceServices.DEVICE_INFORMATION to DeviceCharacteristics.SERIAL_NUMBER,
 
-                MoveSenseServices.BATTERY_SERVICE to MoveSenseCharacteristics.BATTERY_LEVEL,
+                DeviceServices.BATTERY_SERVICE to DeviceCharacteristics.BATTERY_LEVEL,
 
-                MoveSenseServices.MOVESENSE_SERVICE to MoveSenseCharacteristics.MOVESENSE_DATA_1,
-                MoveSenseServices.MOVESENSE_SERVICE to MoveSenseCharacteristics.MOVESENSE_DATA_2
+                DeviceServices.MOVESENSE_SERVICE to DeviceCharacteristics.MOVESENSE_DATA_1,
+                DeviceServices.MOVESENSE_SERVICE to DeviceCharacteristics.MOVESENSE_DATA_2
             )
 
             val (serviceUUID, characteristicUUID) = characteristicsQueue[currentIndex]
-            moveSenseManager. readCharacteristic(serviceUUID, characteristicUUID)
+            deviceManager. readCharacteristic(serviceUUID, characteristicUUID)
 
 
             currentIndex = (currentIndex + 1) % characteristicsQueue.size
@@ -158,12 +155,11 @@ class BLEScanActivity : ComponentActivity() {
 
         }
 
-
     }
 
 
 
-
+    //Launcher for enabling bluetooth
     private val enableBluetoothLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->

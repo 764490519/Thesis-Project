@@ -1,8 +1,8 @@
-package com.example.datacollector.presentation.MoveSense
+package com.example.datacollector.presentation.Bluetooth
 
 import java.util.UUID
 
-object MoveSenseCharacteristics {
+object DeviceCharacteristics {
     //GENERIC_ACCESS
     val DEVICE_NAME = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
     val APPEARANCE = UUID.fromString("00002a01-0000-1000-8000-00805f9b34fb")

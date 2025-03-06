@@ -1,19 +1,17 @@
-package com.example.datacollector.presentation.MoveSense
+package com.example.datacollector.presentation.Bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import com.example.datacollector.presentation.callback.BLEGattCallback
+import com.example.datacollector.presentation.Bluetooth.callback.BLEGattCallback
 import java.util.UUID
 
-class MoveSenseManager(private val context: Context) {
+class DeviceManager(private val context: Context) {
     private var bluetoothGatt: BluetoothGatt? = null
 
     fun connect(device: BluetoothDevice) {
@@ -45,7 +43,7 @@ class MoveSenseManager(private val context: Context) {
             }
             bluetoothGatt!!.readCharacteristic(characteristic)
         } else {
-            Log.e("MoveSenseManagerUserDebug", "${MoveSenseCharacteristics.getCharacteristicName(characteristicUUID)}特征值未找到")
+            Log.e("MoveSenseManagerUserDebug", "${DeviceCharacteristics.getCharacteristicName(characteristicUUID)}特征值未找到")
         }
     }
 
@@ -55,7 +53,7 @@ class MoveSenseManager(private val context: Context) {
             Log.e("MoveSenseManagerUserDebug", "Bluetooth Gatt is not connected")
             return
         }
-        Log.i("MoveSenseManagerUserDebug", "Check Properties of Characteristic ${MoveSenseCharacteristics.getCharacteristicName(characteristicUUID)}")
+        Log.i("MoveSenseManagerUserDebug", "Check Properties of Characteristic ${DeviceCharacteristics.getCharacteristicName(characteristicUUID)}")
         val service = bluetoothGatt!!.getService(serviceUUID)
         val characteristic = service?.getCharacteristic(characteristicUUID)
         val properties = characteristic?.properties

@@ -1,4 +1,4 @@
-package com.example.datacollector.presentation.callback
+package com.example.datacollector.presentation.Bluetooth.callback
 
 import android.Manifest
 import android.bluetooth.BluetoothGatt
@@ -10,7 +10,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.datacollector.presentation.MoveSense.MoveSenseCharacteristics
+import com.example.datacollector.presentation.Bluetooth.DeviceCharacteristics
 
 class BLEGattCallback(
     private val context: Context,
@@ -68,7 +68,7 @@ class BLEGattCallback(
         super.onCharacteristicRead(gatt, characteristic, value, status)
         if (status == BluetoothGatt.GATT_SUCCESS && characteristic != null) {
             Log.i("BLEGattCallbackUserDebug", "onCharacteristicRead")
-            Log.i("BLEGattCallbackUserDebug", " Characteristic : ${MoveSenseCharacteristics.getCharacteristicName(characteristic.uuid)}")
+            Log.i("BLEGattCallbackUserDebug", " Characteristic : ${DeviceCharacteristics.getCharacteristicName(characteristic.uuid)}")
             Log.i("BLEGattCallbackUserDebug", " ByteArray: ${value.joinToString(", ") { it.toUByte().toString() }}")
             Log.i("BLEGattCallbackUserDebug", " Value Read: ${byteArrayToString(value)}")
         }
