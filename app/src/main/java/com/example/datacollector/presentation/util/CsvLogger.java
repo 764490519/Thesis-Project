@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 
-public class CsvLogger {
+public class CsvLogger implements Logger {
 
     private static final String TAG = "CsvLoggerUserDebug";
     private PrintWriter csvWriter;
@@ -68,9 +68,16 @@ public class CsvLogger {
         }
     }
 
+
+
     public static String formatTime(long time) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         String date = format.format(time);
         return date;
+    }
+
+    @Override
+    public void logData(String date, long timestamp, String type, String data) {
+        logData(date + "," + timestamp + "," + type + "," + data);
     }
 }

@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH"/>
 
     <!--    Bluetooth permissions-->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -19,6 +20,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 
 
     <uses-feature android:name="android.hardware.type.watch" />
@@ -42,7 +44,7 @@
             android:value="true" />
 
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.activities.MainActivity"
             android:exported="true"
             android:taskAffinity=""
             android:theme="@style/MainActivityTheme.Starting">
@@ -52,16 +54,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.Bluetooth.BLEScanActivity" />
-        <activity android:name=".presentation.heartrate.HeartRateActivity" />
-        <activity android:name=".presentation.MoveSense.MovesenseActivity" />
-        <activity android:name=".presentation.MoveSense.sensorList.SensorListActivity" />
-        <activity android:name=".presentation.MoveSense.ImuActivity" />
-        <activity android:name=".presentation.location.LocationActivity" />
-        <activity android:name=".presentation.MoveSense.TestActivity"/>
+        <activity android:name=".presentation.bluetooth_test.BLEScanActivity" />
+        <activity android:name=".presentation.activities.HeartRateActivity" />
+        <activity android:name=".presentation.activities.MovesenseActivity" />
+        <activity android:name=".presentation.movesense.sensorList.SensorListActivity" />
+        <activity android:name=".presentation.activities.ImuActivity" />
+        <activity android:name=".presentation.activities.LocationActivity" />
+        <activity android:name=".presentation.activities.DriftActivity"/>
+        <activity android:name=".presentation.activities.TestActivity"/>
+        <activity android:name=".presentation.activities.test.Test1Activity"/>
+        <activity android:name=".presentation.activities.test.Test2Activity"/>
+        <activity android:name=".presentation.activities.test.Test3Activity"/>
+        <activity android:name=".presentation.activities.test.Test4Activity"/>
+        <activity android:name=".presentation.activities.test.Test5Activity"/>
+        <activity android:name=".presentation.activities.test.Test6Activity"/>
+        <activity android:name=".presentation.activities.test.Test7Activity"/>
+        <activity android:name=".presentation.activities.test.Test8Activity"/>
+        <activity android:name=".presentation.activities.test.Test9Activity"/>
 
-        <service android:name=".presentation.location.LocationForeGroundService"
+
+        <service android:name=".presentation.services.LocationForeGroundService"
             android:foregroundServiceType="location"/>
+        <service android:name=".presentation.services.HeartRateForegroundService"
+            android:foregroundServiceType="health"/>
+        <service android:name=".presentation.services.AccelerometerForegroundService"
+            android:foregroundServiceType="health"/>
+        <service android:name=".presentation.services.GyroscopeForegroundService"
+            android:foregroundServiceType="health"/>
     </application>
 
 
